@@ -29,3 +29,7 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+# Saída do build estático (Cloudflare Pages)
+/dist/
+.wrangler/

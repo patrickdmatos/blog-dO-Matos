@@ -1,0 +1,5 @@
+# Configuração do Cloudflare Pages (usada pelo `wrangler pages deploy`).
+# Ajuste o nome para o do seu projeto no painel da Cloudflare.
+name = "blog-do-matos"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-11-01"
