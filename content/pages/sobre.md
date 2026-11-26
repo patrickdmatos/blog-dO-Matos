@@ -3,7 +3,4 @@ title: Sobre
 description: Sobre este blog e quem escreve aqui.
 ---
 
-Escreva aqui quem você é e sobre o que é o blog.
-
-Páginas avulsas ficam em `content/pages/` e ganham uma URL própria:
-este arquivo, `sobre.md`, vira `/sobre`.
+Oi eu sou Patrick e esse é meu Blog, eu gostava muito dessa cultura de blogs e acho interessante que eu possa ter um site meu onde eu falo o que quero. Aqui é meu espaço na internet sem compromisso de gerar ou entregar nada.
