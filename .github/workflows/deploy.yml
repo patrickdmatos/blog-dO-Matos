@@ -17,6 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
@@ -50,11 +51,19 @@ jobs:
         env:
           BLOG_SHOW_DRAFTS: 'false'
 
+      # Node 22 traz o npm 10, que roda os scripts de instalação do Wrangler
+      # (esbuild/workerd). Versões novas do npm os bloqueiam e o Wrangler trava.
+      - uses: actions/setup-node@v4
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
+        with:
+          node-version: '22'
+
       - name: Publicar no Cloudflare Pages
         # Só publica se os segredos estiverem configurados no repositório.
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' }}
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PROJECT_NAME || 'blog-do-matos' }} --branch=${{ github.head_ref || github.ref_name }}
+        timeout-minutes: 5
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME || 'blog-do-matos' }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: npx --yes wrangler@4 pages deploy dist --project-name="$PROJECT_NAME" --branch="$BRANCH"
