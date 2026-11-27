@@ -77,7 +77,8 @@ servidor com [tempest/highlight](https://github.com/tempestphp/highlight).
 
 ## Rodando localmente
 
-Requisitos: PHP 8.3+ (extensões `mbstring`, `intl`, `dom`) e Composer.
+Requisitos: PHP 8.3+ (extensões `mbstring`, `intl`, `dom`, `xml`, `curl`,
+`tokenizer`, `fileinfo` e `openssl`) e Composer.
 Não precisa de Node nem de banco de dados.
 
 ```bash
@@ -85,6 +86,38 @@ composer install
 cp .env.example .env
 php artisan key:generate
 php artisan serve          # http://localhost:8000
+```
+
+### Ambiente sem sudo
+
+Em máquinas sem PHP instalado e sem acesso root, use o build estático do
+[static-php-cli](https://static-php.dev) (o build `bulk` já traz `intl`,
+`mbstring`, `dom`, `curl` e `tokenizer`) e o Composer em `~/.local`:
+
+```bash
+mkdir -p ~/.local/php ~/.local/bin
+
+# PHP 8.3 estático (confira a versão mais recente em https://dl.static-php.dev/static-php-cli/bulk/)
+curl -L -o /tmp/php.tar.gz \
+  https://dl.static-php.dev/static-php-cli/bulk/php-8.3.32-cli-linux-x86_64.tar.gz
+tar -xzf /tmp/php.tar.gz -C ~/.local/php
+chmod +x ~/.local/php/php
+ln -sf ~/.local/php/php ~/.local/bin/php
+
+# Composer
+curl -L -o ~/.local/bin/composer https://getcomposer.org/composer-stable.phar
+chmod +x ~/.local/bin/composer
+
+# Garanta ~/.local/bin no PATH
+export PATH="$HOME/.local/bin:$PATH"
+php -v && composer --version
+```
+
+Depois siga os comandos acima. Para validar tudo antes de um push:
+
+```bash
+php artisan test
+BLOG_SHOW_DRAFTS=false php artisan blog:build
 ```
 
 Com `BLOG_SHOW_DRAFTS=true` no `.env`, os rascunhos aparecem localmente.
